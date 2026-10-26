@@ -58,9 +58,10 @@ func resourceOrganizationBlockCreate(d *schema.ResourceData, meta any) error {
 	return resourceOrganizationBlockRead(d, meta)
 }
 
-func resourceOrganizationBlockRead(d *schema.ResourceData, meta any) error {
-	client := meta.(*Owner).v3client
-	orgName := meta.(*Owner).name
+func resourceOrganizationBlockRead(d *schema.ResourceData, m any) error {
+	meta, _ := m.(*Owner)
+	client := meta.v3client
+	orgName := meta.name
 
 	username := d.Id()
 
@@ -94,8 +95,8 @@ func resourceOrganizationBlockRead(d *schema.ResourceData, meta any) error {
 	if err = d.Set("username", username); err != nil {
 		return err
 	}
-	if meta.(*Owner).storeEtag {
-		if err = d.Set("etag", resp.Header.Get("ETag")); err != nil {
+	if meta.storeEtag {
+		if err := d.Set("etag", resp.Header.Get("ETag")); err != nil {
 			return err
 		}
 	}

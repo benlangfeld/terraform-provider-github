@@ -756,9 +756,10 @@ func resourceGithubOrganizationRuleset() *schema.Resource {
 	}
 }
 
-func resourceGithubOrganizationRulesetCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
-	client := meta.(*Owner).v3client
-	owner := meta.(*Owner).name
+func resourceGithubOrganizationRulesetCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
+	meta, _ := m.(*Owner)
+	client := meta.v3client
+	owner := meta.name
 	name := d.Get("name").(string)
 
 	tflog.Debug(ctx, fmt.Sprintf("Creating organization ruleset: %s/%s", owner, name), map[string]any{
@@ -785,7 +786,7 @@ func resourceGithubOrganizationRulesetCreate(ctx context.Context, d *schema.Reso
 	if err := d.Set("node_id", ruleset.GetNodeID()); err != nil {
 		return diag.FromErr(err)
 	}
-	if meta.(*Owner).storeEtag {
+	if meta.storeEtag {
 		if err := d.Set("etag", resp.Header.Get("ETag")); err != nil {
 			return diag.FromErr(err)
 		}
@@ -803,9 +804,10 @@ func resourceGithubOrganizationRulesetCreate(ctx context.Context, d *schema.Reso
 	return nil
 }
 
-func resourceGithubOrganizationRulesetRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
-	client := meta.(*Owner).v3client
-	owner := meta.(*Owner).name
+func resourceGithubOrganizationRulesetRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
+	meta, _ := m.(*Owner)
+	client := meta.v3client
+	owner := meta.name
 
 	tflog.Trace(ctx, fmt.Sprintf("Reading organization ruleset: %s", d.Id()), map[string]any{
 		"owner":      owner,
@@ -877,7 +879,7 @@ func resourceGithubOrganizationRulesetRead(ctx context.Context, d *schema.Resour
 	if err := d.Set("node_id", ruleset.GetNodeID()); err != nil {
 		return diag.FromErr(err)
 	}
-	if meta.(*Owner).storeEtag {
+	if meta.storeEtag {
 		if err := d.Set("etag", resp.Header.Get("ETag")); err != nil {
 			return diag.FromErr(err)
 		}
@@ -892,9 +894,10 @@ func resourceGithubOrganizationRulesetRead(ctx context.Context, d *schema.Resour
 	return nil
 }
 
-func resourceGithubOrganizationRulesetUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
-	client := meta.(*Owner).v3client
-	owner := meta.(*Owner).name
+func resourceGithubOrganizationRulesetUpdate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
+	meta, _ := m.(*Owner)
+	client := meta.v3client
+	owner := meta.name
 	name := d.Get("name").(string)
 
 	if err := d.Set("etag", nil); err != nil {
@@ -936,7 +939,7 @@ func resourceGithubOrganizationRulesetUpdate(ctx context.Context, d *schema.Reso
 	if err := d.Set("node_id", ruleset.GetNodeID()); err != nil {
 		return diag.FromErr(err)
 	}
-	if meta.(*Owner).storeEtag {
+	if meta.storeEtag {
 		if err := d.Set("etag", resp.Header.Get("ETag")); err != nil {
 			return diag.FromErr(err)
 		}

@@ -685,12 +685,13 @@ func resourceGithubRepositoryRuleset() *schema.Resource {
 	}
 }
 
-func resourceGithubRepositoryRulesetCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
-	client := meta.(*Owner).v3client
+func resourceGithubRepositoryRulesetCreate(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
+	meta, _ := m.(*Owner)
+	client := meta.v3client
 
 	rulesetReq := resourceGithubRulesetObject(d, "")
 
-	owner := meta.(*Owner).name
+	owner := meta.name
 
 	repoName := d.Get("repository").(string)
 
@@ -715,7 +716,7 @@ func resourceGithubRepositoryRulesetCreate(ctx context.Context, d *schema.Resour
 	if err := d.Set("node_id", ruleset.GetNodeID()); err != nil {
 		return diag.FromErr(err)
 	}
-	if meta.(*Owner).storeEtag {
+	if meta.storeEtag {
 		if err := d.Set("etag", resp.Header.Get("ETag")); err != nil {
 			return diag.FromErr(err)
 		}
@@ -727,10 +728,11 @@ func resourceGithubRepositoryRulesetCreate(ctx context.Context, d *schema.Resour
 	return nil
 }
 
-func resourceGithubRepositoryRulesetRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
-	client := meta.(*Owner).v3client
+func resourceGithubRepositoryRulesetRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
+	meta, _ := m.(*Owner)
+	client := meta.v3client
 
-	owner := meta.(*Owner).name
+	owner := meta.name
 
 	repoName := d.Get("repository").(string)
 	rulesetID, err := strconv.ParseInt(d.Id(), 10, 64)
@@ -787,7 +789,7 @@ func resourceGithubRepositoryRulesetRead(ctx context.Context, d *schema.Resource
 	if err := d.Set("node_id", ruleset.GetNodeID()); err != nil {
 		return diag.FromErr(err)
 	}
-	if meta.(*Owner).storeEtag {
+	if meta.storeEtag {
 		if err := d.Set("etag", resp.Header.Get("ETag")); err != nil {
 			return diag.FromErr(err)
 		}

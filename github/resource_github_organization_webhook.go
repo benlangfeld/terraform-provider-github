@@ -114,15 +114,16 @@ func resourceGithubOrganizationWebhookCreate(ctx context.Context, d *schema.Reso
 	return resourceGithubOrganizationWebhookRead(ctx, d, meta)
 }
 
-func resourceGithubOrganizationWebhookRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
+func resourceGithubOrganizationWebhookRead(ctx context.Context, d *schema.ResourceData, m any) diag.Diagnostics {
+	meta, _ := m.(*Owner)
 	err := checkOrganization(meta)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	client := meta.(*Owner).v3client
+	client := meta.v3client
 
-	orgName := meta.(*Owner).name
+	orgName := meta.name
 	hookID, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
 		return diag.FromErr(unconvertibleIdErr(d.Id(), err))
@@ -148,8 +149,8 @@ func resourceGithubOrganizationWebhookRead(ctx context.Context, d *schema.Resour
 		return diag.FromErr(err)
 	}
 
-	if meta.(*Owner).storeEtag {
-		if err = d.Set("etag", resp.Header.Get("ETag")); err != nil {
+	if meta.storeEtag {
+		if err := d.Set("etag", resp.Header.Get("ETag")); err != nil {
 			return diag.FromErr(err)
 		}
 	}

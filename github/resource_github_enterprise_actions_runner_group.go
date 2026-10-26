@@ -94,8 +94,9 @@ func resourceGithubActionsEnterpriseRunnerGroup() *schema.Resource {
 	}
 }
 
-func resourceGithubActionsEnterpriseRunnerGroupCreate(d *schema.ResourceData, meta any) error {
-	client := meta.(*Owner).v3client
+func resourceGithubActionsEnterpriseRunnerGroupCreate(d *schema.ResourceData, m any) error {
+	meta, _ := m.(*Owner)
+	client := meta.v3client
 
 	name := d.Get("name").(string)
 	enterpriseSlug := d.Get("enterprise_slug").(string)
@@ -143,8 +144,8 @@ func resourceGithubActionsEnterpriseRunnerGroupCreate(d *schema.ResourceData, me
 		return err
 	}
 	d.SetId(strconv.FormatInt(enterpriseRunnerGroup.GetID(), 10))
-	if meta.(*Owner).storeEtag {
-		if err = d.Set("etag", resp.Header.Get("ETag")); err != nil {
+	if meta.storeEtag {
+		if err := d.Set("etag", resp.Header.Get("ETag")); err != nil {
 			return err
 		}
 	}
@@ -226,7 +227,7 @@ func resourceGithubActionsEnterpriseRunnerGroupRead(d *schema.ResourceData, m an
 	}
 
 	if meta.storeEtag {
-		if err = d.Set("etag", resp.Header.Get("ETag")); err != nil {
+		if err := d.Set("etag", resp.Header.Get("ETag")); err != nil {
 			return err
 		}
 	}

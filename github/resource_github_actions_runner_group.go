@@ -154,7 +154,7 @@ func resourceGithubActionsRunnerGroupCreate(d *schema.ResourceData, m any) error
 	}
 	d.SetId(strconv.FormatInt(runnerGroup.GetID(), 10))
 	if meta.storeEtag {
-		if err = d.Set("etag", resp.Header.Get("ETag")); err != nil {
+		if err := d.Set("etag", resp.Header.Get("ETag")); err != nil {
 			return err
 		}
 	}
@@ -245,7 +245,7 @@ func resourceGithubActionsRunnerGroupRead(d *schema.ResourceData, m any) error {
 	}
 
 	if meta.storeEtag {
-		if err = d.Set("etag", resp.Header.Get("ETag")); err != nil {
+		if err := d.Set("etag", resp.Header.Get("ETag")); err != nil {
 			return err
 		}
 	}

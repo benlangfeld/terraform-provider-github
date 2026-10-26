@@ -149,7 +149,7 @@ func resourceGithubIssueLabelRead(ctx context.Context, d *schema.ResourceData, m
 	}
 
 	if meta.storeEtag {
-		if err = d.Set("etag", resp.Header.Get("ETag")); err != nil {
+		if err := d.Set("etag", resp.Header.Get("ETag")); err != nil {
 			return diag.FromErr(err)
 		}
 	}
