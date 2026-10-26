@@ -121,12 +121,11 @@ func resourceGithubEMUGroupMappingCreate(ctx context.Context, d *schema.Resource
 		return diag.FromErr(err)
 	}
 
-	etag := resp.Header.Get("ETag")
-	tflog.Trace(ctx, "Setting state attribute: etag", map[string]any{
-		"etag": etag,
-	})
 	if meta.storeEtag {
-		if err := d.Set("etag", etag); err != nil {
+		tflog.Trace(ctx, "Setting state attribute: etag", map[string]any{
+			"etag": resp.Header.Get("ETag"),
+		})
+		if err := d.Set("etag", resp.Header.Get("ETag")); err != nil {
 			return diag.FromErr(err)
 		}
 	}
@@ -195,9 +194,8 @@ func resourceGithubEMUGroupMappingRead(ctx context.Context, d *schema.ResourceDa
 		return diag.Errorf("group id mismatch: %d != %d", group.GetGroupID(), groupID)
 	}
 
-	etag := resp.Header.Get("ETag")
 	if meta.storeEtag {
-		if err := d.Set("etag", etag); err != nil {
+		if err := d.Set("etag", resp.Header.Get("ETag")); err != nil {
 			return diag.FromErr(err)
 		}
 	}
@@ -248,12 +246,11 @@ func resourceGithubEMUGroupMappingUpdate(ctx context.Context, d *schema.Resource
 
 		tflog.Debug(ctx, "Successfully updated connected external group")
 
-		etag := resp.Header.Get("ETag")
-		tflog.Trace(ctx, "Setting state attribute: etag", map[string]any{
-			"etag": etag,
-		})
 		if meta.storeEtag {
-			if err := d.Set("etag", etag); err != nil {
+			tflog.Trace(ctx, "Setting state attribute: etag", map[string]any{
+				"etag": resp.Header.Get("ETag"),
+			})
+			if err := d.Set("etag", resp.Header.Get("ETag")); err != nil {
 				return diag.FromErr(err)
 			}
 		}
